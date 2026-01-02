@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    kotlin("kapt")
 }
 
 android {
@@ -56,7 +56,7 @@ dependencies {
     //Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     //ViewModel
     implementation(libs.lifecycle.viewmodel.ktx)
@@ -75,13 +75,21 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-    implementation(libs.firebase.firestore.ktx)
 
     //Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
 
     implementation(libs.coroutines.play.services)
+
+    //Image&Icons
+    implementation(libs.coil.compose)
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
+
+    //Navigation
+    implementation(libs.navigation.compose)
 
 
 }

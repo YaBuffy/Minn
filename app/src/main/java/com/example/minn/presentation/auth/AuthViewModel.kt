@@ -1,5 +1,8 @@
 package com.example.minn.presentation.auth
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.minn.Util.Response
@@ -17,6 +20,20 @@ class AuthViewModel @Inject constructor(
 
     private val _state = MutableStateFlow((AuthUIState()))
     val state = _state.asStateFlow()
+
+    var email by mutableStateOf("")
+        private set
+
+    var password by mutableStateOf("")
+        private set
+
+    fun onEmailChange(newEmail: String){
+        email = newEmail
+    }
+
+    fun onPasswordChange(newPassword: String){
+        password = newPassword
+    }
 
     init{
         getAuthState()
