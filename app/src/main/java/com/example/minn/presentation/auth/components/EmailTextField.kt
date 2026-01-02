@@ -28,7 +28,11 @@ fun EmailTextField(
     OutlinedTextField(
         value = entry,
         onValueChange = onChange,
-        label = {Text(text = "email")},
+        label = {
+            Text(
+                text = "email",
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+        ) },
         leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         modifier = Modifier

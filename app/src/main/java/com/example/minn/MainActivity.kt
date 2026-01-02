@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import com.example.compose.AppTheme
+import com.example.minn.presentation.AppNavGraph
+import com.example.minn.presentation.auth.SignInScreen
 import com.example.minn.presentation.auth.SignUpScreen
 //import com.example.minn.ui.theme.MinnTheme
 import com.google.firebase.Firebase
@@ -35,7 +37,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTheme {
-                SignUpScreen()
+                AppNavGraph()
             }
         }
     }
