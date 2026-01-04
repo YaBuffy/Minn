@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
+
     fun isUserAuth(): Boolean
 
     fun getAuthState(): Flow<Boolean>

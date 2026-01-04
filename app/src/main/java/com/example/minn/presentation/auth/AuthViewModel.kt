@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.minn.Util.Response
-import com.example.minn.domain.usecase.AuthUseCases
+import com.example.minn.domain.usecase.authUseCase.AuthUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authUseCases: AuthUseCases
+    private val authUseCases: AuthUseCases,
 ): ViewModel() {
 
     private val _state = MutableStateFlow((AuthUIState()))
@@ -46,7 +46,6 @@ class AuthViewModel @Inject constructor(
 
             }
         }
-
     }
 
     fun signUp(email: String, password: String){
@@ -63,13 +62,7 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-    fun signOut(){
-        viewModelScope.launch {
-            authUseCases.signOut().collect { response ->
-                handleResponse(response)
-            }
-        }
-    }
+
 
     private fun handleResponse(response: Response<Boolean>){
         when (response){

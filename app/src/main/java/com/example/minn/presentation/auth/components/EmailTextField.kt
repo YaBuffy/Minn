@@ -27,6 +27,7 @@ fun EmailTextField(
 
     OutlinedTextField(
         value = entry,
+        maxLines = 1,
         onValueChange = onChange,
         label = {
             Text(

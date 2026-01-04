@@ -1,7 +1,9 @@
 package com.example.minn.data.repository
 
 import com.example.minn.Util.Response
+import com.example.minn.domain.model.User
 import com.example.minn.domain.repository.AuthRepository
+import com.example.minn.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val fs: FirebaseFirestore
+    private val fs: FirebaseFirestore,
+    private val userRepository: UserRepository
 ): AuthRepository {
     override fun isUserAuth(): Boolean {
         return auth.currentUser!=null
@@ -39,6 +42,16 @@ class AuthRepositoryImpl @Inject constructor(
 
         try{
             auth.createUserWithEmailAndPassword(email,password).await()
+
+            val firebaseUser = auth.currentUser!!
+
+            val user = User(
+                uid = firebaseUser.uid,
+                email = email,
+            )
+
+            userRepository.createUser(user)
+
             emit(Response.Success(true))
         } catch (e: Exception){
             emit(Response.Error(e.message ?: "Sign Up error"))

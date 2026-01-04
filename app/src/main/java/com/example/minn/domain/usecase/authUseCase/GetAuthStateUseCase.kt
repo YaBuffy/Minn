@@ -1,4 +1,4 @@
-package com.example.minn.domain.usecase
+package com.example.minn.domain.usecase.authUseCase
 
 import com.example.minn.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
