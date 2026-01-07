@@ -15,5 +15,5 @@ interface AuthRepository {
 
     fun signIn(email: String, password: String): Flow<Response<Boolean>>
 
-    fun signOut(): Flow<Response<Boolean>>
+    suspend fun signOut()
 }

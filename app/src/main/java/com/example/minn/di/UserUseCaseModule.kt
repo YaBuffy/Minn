@@ -2,6 +2,7 @@ package com.example.minn.di
 
 import com.example.minn.domain.repository.UserRepository
 import com.example.minn.domain.usecase.userUseCase.CreateUserUseCase
+import com.example.minn.domain.usecase.userUseCase.GetUserUseCase
 import com.example.minn.domain.usecase.userUseCase.UpdateUserUseCase
 import dagger.Module
 import dagger.Provides
@@ -27,6 +28,14 @@ object UserUseCaseModule {
         repository: UserRepository
     ): UpdateUserUseCase {
         return UpdateUserUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserUseCase(
+        repository: UserRepository
+    ): GetUserUseCase {
+        return GetUserUseCase(repository)
     }
 
 }

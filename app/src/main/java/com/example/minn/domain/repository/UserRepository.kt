@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     suspend fun createUser(user: User)
     suspend fun updateUser(user: User)
+
+    fun getUser(uid: String): Flow<Response<User>>
 }

@@ -42,7 +42,9 @@ class AuthViewModel @Inject constructor(
     private fun getAuthState(){
         viewModelScope.launch {
             authUseCases.getAuthState().collect {isAuth->
-                _state.value = _state.value.copy(isAuthorized = isAuth)
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    isAuthorized = isAuth)
 
             }
         }
@@ -82,7 +84,7 @@ class AuthViewModel @Inject constructor(
 
 
 data class AuthUIState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val isAuthorized: Boolean = false,
     val error: String? = null
 )

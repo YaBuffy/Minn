@@ -1,8 +1,6 @@
 package com.example.minn.presentation
 
-import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +17,7 @@ fun AppNavGraph(
 ){
     NavHost(
         navController = navController,
-        startDestination = if(isAuth) Screen.Chat.route else Screen.SignIn.route
+        startDestination = if(isAuth) Screen.Profile.route else Screen.SignIn.route
     ){
         composable(Screen.SignIn.route) {
             SignInScreen(

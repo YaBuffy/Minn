@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val fs: FirebaseFirestore,
     private val userRepository: UserRepository
 ): AuthRepository {
     override fun isUserAuth(): Boolean {
@@ -72,14 +71,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun signOut(): Flow<Response<Boolean>> = flow {
-        emit(Response.Loading)
-
-        try{
-            auth.signOut()
-            emit(Response.Success(true))
-        } catch (e: Exception){
-            emit(Response.Error(e.message ?: "Sign out error"))
-        }
+    override suspend fun signOut(){
+        auth.signOut()
     }
 }
