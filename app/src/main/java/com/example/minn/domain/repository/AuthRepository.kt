@@ -11,7 +11,7 @@ interface AuthRepository {
 
     fun getAuthState(): Flow<Boolean>
 
-    fun signUp(email: String, password: String): Flow<Response<Boolean>>
+    fun signUp(email: String, password: String, name: String): Flow<Response<Boolean>>
 
     fun signIn(email: String, password: String): Flow<Response<Boolean>>
 

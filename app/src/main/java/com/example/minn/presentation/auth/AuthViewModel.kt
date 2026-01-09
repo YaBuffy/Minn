@@ -21,12 +21,18 @@ class AuthViewModel @Inject constructor(
     private val _state = MutableStateFlow((AuthUIState()))
     val state = _state.asStateFlow()
 
+    var name by mutableStateOf("")
+        private set
+
     var email by mutableStateOf("")
         private set
 
     var password by mutableStateOf("")
         private set
 
+    fun onNameChange(newName: String){
+        name = newName
+    }
     fun onEmailChange(newEmail: String){
         email = newEmail
     }
@@ -50,9 +56,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun signUp(email: String, password: String){
+    fun signUp(email: String, password: String, name: String){
         viewModelScope.launch {
-            authUseCases.signUp(email, password).collect { response ->
+            authUseCases.signUp(email, password, name).collect { response ->
                 handleResponse(response)
             }
         }

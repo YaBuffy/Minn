@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class SignUpUseCase(
     private val repository: AuthRepository
 ) {
-    operator fun invoke(email: String, password: String): Flow<Response<Boolean>>{
-        return repository.signUp(email, password)
+    operator fun invoke(email: String, password: String, name: String): Flow<Response<Boolean>>{
+        return repository.signUp(email, password, name)
     }
 }

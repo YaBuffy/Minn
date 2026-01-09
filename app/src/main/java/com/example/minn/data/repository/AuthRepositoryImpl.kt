@@ -5,7 +5,6 @@ import com.example.minn.domain.model.User
 import com.example.minn.domain.repository.AuthRepository
 import com.example.minn.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -35,7 +34,8 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun signUp(
         email: String,
-        password: String
+        password: String,
+        name: String
     ): Flow<Response<Boolean>> = flow {
         emit(Response.Loading)
 
@@ -47,6 +47,7 @@ class AuthRepositoryImpl @Inject constructor(
             val user = User(
                 uid = firebaseUser.uid,
                 email = email,
+                name = name
             )
 
             userRepository.createUser(user)

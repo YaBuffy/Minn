@@ -1,7 +1,7 @@
 package com.example.minn.presentation.auth.components
 
+
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -10,11 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import com.example.minn.R
 
 @Composable
-fun EmailTextField(
+fun NameTextField(
     entry: String,
     onChange: (String)-> Unit = {}
 ){
@@ -25,11 +24,10 @@ fun EmailTextField(
         onValueChange = onChange,
         label = {
             Text(
-                text = stringResource(R.string.email),
+                text = stringResource(R.string.name_low),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
-        ) },
-        leadingIcon = { Icon(painter = painterResource(R.drawable.baseline_email_24), contentDescription = null) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            ) },
+        leadingIcon = { Icon(painter = painterResource(R.drawable.baseline_person_24), contentDescription = null) },
         modifier = Modifier
             .fillMaxWidth(0.75f)
     )

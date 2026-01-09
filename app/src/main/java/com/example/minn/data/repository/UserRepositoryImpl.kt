@@ -29,7 +29,8 @@ class UserRepositoryImpl @Inject constructor(
                     "surname" to user.surname,
                     "avatar" to user.avatar,
                     "bio" to user.bio,
-                    "gender" to user.gender.name
+                    "gender" to user.gender.name,
+                    "birthdate" to user.birthdate
                 )
             ).await()
     }

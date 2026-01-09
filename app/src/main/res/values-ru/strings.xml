@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Minn</string>
+
+    <!-- Genders -->
+    <string name="gender_male">Мужской</string>
+    <string name="gender_female">Женский</string>
+    <string name="gender_other">Другое</string>
+    <string name="gender_not_specified">Не указано</string>
+
+    <!-- Profile Screen -->
+    <string name="profile">Профиль</string>
+    <string name="edit_profile">Редактировать профиль</string>
+    <string name="name">Имя</string>
+    <string name="surname">Фамилия</string>
+    <string name="bio">О себе</string>
+    <string name="gender">Пол</string>
+    <string name="profile_updated">Профиль обновлен</string>
+    <string name="birthdate">Дата Рождения</string>
+    <string name="cancellation">Отмена</string>
+    <string name="ok">ОК</string>
+
+
+
+    <!-- Auth Screen -->
+    <string name="email">электронная почта</string>
+    <string name="password">пароль</string>
+    <string name="name_low">имя</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="login_to_your_account">Войдите в свой аккаунт</string>
+    <string name="create_your_account">Создайте свой аккаунт</string>
+    <string name="don_t_have_an_account">Нет аккаунта?</string>
+</resources>

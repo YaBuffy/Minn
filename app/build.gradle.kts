@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.minn"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -84,9 +84,8 @@ dependencies {
 
     implementation(libs.coroutines.play.services)
 
-    //Image&Icons
+    //Image
     implementation(libs.coil.compose)
-    implementation("androidx.compose.material:material-icons-extended:1.5.0")
 
     //Navigation
     implementation(libs.navigation.compose)

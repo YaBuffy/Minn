@@ -1,5 +1,6 @@
 package com.example.minn.presentation.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.minn.Util.Response
@@ -13,6 +14,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
+import com.google.firebase.Timestamp
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,8 +50,12 @@ class ProfileViewModel  @Inject constructor(
         _state.value = _state.value.copy(avatar = value)
     }
 
-    fun onGenderChange(value: String) {
-        _state.value = _state.value.copy(surname = value)
+    fun onGenderChange(value: Gender) {
+        _state.value = _state.value.copy(gender = value)
+    }
+
+    fun onBirthDateChange(value: LocalDate){
+        _state.value = _state.value.copy(birthDate = value)
     }
 
 
@@ -63,14 +72,23 @@ class ProfileViewModel  @Inject constructor(
                     }
 
                     is Response.Success -> {
+                        Log.d("Time", "response.data.birthday - ${response.data.birthdate}")
+                        val birthDateLocal: LocalDate? = response.data.birthdate?.toDate()
+                            ?.toInstant()
+                            ?.atZone(ZoneId.systemDefault())
+                            ?.toLocalDate()
+                        Log.d("Time", "birthDateLocal - ${birthDateLocal.toString()}")
                         _state.value = _state.value.copy(
                             isLoading = false,
                             name = response.data.name,
                             surname = response.data.surname,
+                            email = response.data.email,
                             bio = response.data.bio,
                             avatar = response.data.avatar,
-                            gender = response.data.gender
+                            gender = response.data.gender,
+                            birthDate = birthDateLocal
                         )
+                        Log.d("Time", "_state.value.birthDate - ${_state.value.birthDate}")
                     }
 
                     is Response.Error -> {
@@ -87,16 +105,29 @@ class ProfileViewModel  @Inject constructor(
 
     fun updateUser(){
         val uid = auth.currentUser?.uid ?: return
+        val birthDateTimestamp: Timestamp? = _state.value.birthDate.let { localDate ->
+            val date: Date = Date.from(localDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+            Timestamp(date)
+        }
+        Log.d("Time", "birthDateTimestamp - ${birthDateTimestamp}")
         val user = User(
             uid = uid,
             name = _state.value.name,
             surname = _state.value.surname,
+            email = _state.value.email,
             bio = _state.value.bio,
             avatar = _state.value.avatar,
-            gender = _state.value.gender
+            gender = _state.value.gender,
+            birthdate = birthDateTimestamp
         )
         viewModelScope.launch {
-            updateUserUseCase(user = user)
+            _state.value = _state.value.copy(isLoading = true, success = false, error = null)
+            try {
+                updateUserUseCase(user = user)
+                _state.value = _state.value.copy(isLoading = false, success = true)
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(isLoading = false, error = e.message)
+            }
         }
     }
 
@@ -107,12 +138,17 @@ class ProfileViewModel  @Inject constructor(
     }
 
     private fun fillFields(user: User) {
+        val birthDateLocal: LocalDate? = user.birthdate?.toDate()
+            ?.toInstant()
+            ?.atZone(ZoneId.systemDefault())
+            ?.toLocalDate()
         _state.value = _state.value.copy(
             name = user.name,
             surname = user.surname,
             bio = user.bio,
             avatar = user.avatar,
-            gender = user.gender
+            gender = user.gender,
+            birthDate = birthDateLocal
         )
     }
 }
@@ -120,9 +156,12 @@ class ProfileViewModel  @Inject constructor(
 data class ProfileUIState(
     val name: String = "",
     val surname: String = "",
+    val email: String = "",
     val bio: String = "",
     val avatar: String = "",
     val gender: Gender = Gender.NOT_SPECIFIED,
+    val birthDate: LocalDate? = null,
     val isLoading: Boolean = true,
+    val success: Boolean = false,
     val error: String? = null
 )
