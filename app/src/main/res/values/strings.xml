@@ -8,6 +8,12 @@
     <!--    Profile Screen-->
     <string name="profile">Profile</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="about_me">About me</string>
+    <string name="re_entry">You need to log in again to delete your account.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm_login">Confirm your login</string>
+    <string name="delete_account">Delete Account</string>
     <string name="name">Name</string>
     <string name="surname">Surname</string>
     <string name="bio">Bio</string>

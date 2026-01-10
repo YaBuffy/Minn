@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,9 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +24,6 @@ fun ProfileInfoText(
     title: String,
     @DrawableRes icon: Int,
     content: String,
-    onChange: (String)->Unit
 ){
     Column(
         modifier = Modifier
@@ -52,18 +48,27 @@ fun ProfileInfoText(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BasicTextField(
-                value = content,
-                onValueChange = {onChange(it) },
+//            BasicTextField(
+//                value = content,
+//                onValueChange = {onChange(it) },
+//                modifier = Modifier
+//                    .padding(start = 10.dp, top = 8.dp, bottom = 8.dp)
+//                    .fillMaxWidth(0.8f),
+//                maxLines = 3,
+//                textStyle = TextStyle(
+//                    fontSize = 16.sp,
+//                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+//                ),
+//                cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimaryContainer)
+//            )
+            Text(
+                text = content,
                 modifier = Modifier
                     .padding(start = 10.dp, top = 8.dp, bottom = 8.dp)
                     .fillMaxWidth(0.8f),
                 maxLines = 3,
-                textStyle = TextStyle(
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimaryContainer)
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
             Icon(
                 painter = painterResource(icon),
@@ -71,8 +76,6 @@ fun ProfileInfoText(
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.padding(end = 10.dp, top = 8.dp, bottom = 8.dp)
             )
-
-            }
-
+        }
     }
 }

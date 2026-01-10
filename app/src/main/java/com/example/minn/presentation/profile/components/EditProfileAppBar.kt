@@ -1,6 +1,6 @@
 package com.example.minn.presentation.profile.components
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,13 +13,13 @@ import com.example.minn.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileAppBar(
-    onBack: ()-> Unit,
-    onSignOut: ()->Unit,
-    onEditProfile: ()->Unit
+fun EditProfileAppBar(
+    onBack: ()->Unit,
+    onSave: ()->Unit,
+    isLoading: Boolean,
 ){
     TopAppBar(
-        title = {Text(stringResource(R.string.profile))},
+        title = {Text(stringResource(R.string.edit_profile))},
         navigationIcon = {
             IconButton(
                 onClick = {onBack()},
@@ -30,19 +30,17 @@ fun ProfileAppBar(
             }
         },
         actions = {
-            Row{
-                IconButton(
-                    onClick = {onEditProfile()}
-                ) {
-                    Icon(painter = painterResource(R.drawable.baseline_edit_24),
-                        contentDescription = null)
-                }
-
-                IconButton(
-                    onClick = {onSignOut()}
-                ) {
-                    Icon(painter = painterResource(R.drawable.outline_exit_to_app_24),
-                        contentDescription = null)
+            IconButton(
+                onClick = {onSave()},
+                enabled = !isLoading
+            ) {
+                if (isLoading){
+                    CircularProgressIndicator()
+                }else{
+                    Icon(
+                        painter = painterResource(R.drawable.outline_check_24),
+                        contentDescription = null
+                    )
                 }
             }
         }

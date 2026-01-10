@@ -1,10 +1,14 @@
 package com.example.minn.data.repository
 
+import android.util.Log
 import com.example.minn.Util.Response
 import com.example.minn.domain.model.User
 import com.example.minn.domain.repository.AuthRepository
 import com.example.minn.domain.repository.UserRepository
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -15,6 +19,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore,
     private val userRepository: UserRepository
 ): AuthRepository {
     override fun isUserAuth(): Boolean {
@@ -75,4 +80,44 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signOut(){
         auth.signOut()
     }
+
+    override suspend fun deleteAccount(): Response<Boolean> {
+        val user = auth.currentUser
+            ?: return Response.Error("User not authenticated")
+
+        val uid = user.uid
+
+        return try {
+            firestore.collection("users").document(uid)
+                .delete()
+                .await()
+            user.delete().await()
+            Log.d("delete", "success")
+            Response.Success(true)
+        } catch (e: FirebaseAuthRecentLoginRequiredException){
+            Response.Error("RECENT_LOGIN_REQUIRED")
+        } catch (e: Exception){
+            Log.d("delete", e.toString())
+            Response.Error(e.message ?: "Failed to delete account")
+
+        }
+    }
+
+    override suspend fun reauthenticate(
+        email: String,
+        password: String
+    ): Response<Boolean> {
+
+        val user = auth.currentUser
+            ?: return Response.Error("User not authenticated")
+
+        return try {
+            val credential = EmailAuthProvider.getCredential(email, password)
+            user.reauthenticate(credential).await()
+            Response.Success(true)
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Re-authentication failed")
+        }
+    }
+
 }

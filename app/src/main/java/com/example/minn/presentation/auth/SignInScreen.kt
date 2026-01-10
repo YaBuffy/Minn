@@ -84,6 +84,7 @@ fun SignInScreen(
 
         EmailTextField(
             entry = email,
+            isError = state.error!=null
         ){
             vm.onEmailChange(it)
         }
@@ -91,7 +92,8 @@ fun SignInScreen(
         Spacer(modifier = Modifier.padding(vertical = 5.dp))
 
         PasswordTextField(
-            entry = password
+            entry = password,
+            isError = state.error!=null
         ){
             vm.onPasswordChange(it)
         }

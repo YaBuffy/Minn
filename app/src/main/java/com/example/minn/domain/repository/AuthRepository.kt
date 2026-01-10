@@ -16,4 +16,7 @@ interface AuthRepository {
     fun signIn(email: String, password: String): Flow<Response<Boolean>>
 
     suspend fun signOut()
+
+    suspend fun deleteAccount(): Response<Boolean>
+    suspend fun reauthenticate(email: String, password: String): Response<Boolean>
 }

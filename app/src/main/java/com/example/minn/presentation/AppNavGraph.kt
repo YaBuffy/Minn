@@ -8,6 +8,7 @@ import com.example.minn.Screen
 import com.example.minn.presentation.auth.SignInScreen
 import com.example.minn.presentation.auth.SignUpScreen
 import com.example.minn.presentation.chat.ChatScreen
+import com.example.minn.presentation.profile.EditProfileScreen
 import com.example.minn.presentation.profile.ProfileScreen
 
 @Composable
@@ -44,7 +45,15 @@ fun AppNavGraph(
         }
 
         composable(Screen.Profile.route) {
-            ProfileScreen()
+            ProfileScreen(
+                onBack = {},
+                onEditProfile = {navController.navigate(Screen.EditProfile.route)}
+            )
+        }
+        composable(Screen.EditProfile.route) {
+            EditProfileScreen(
+                onBack = {navController.navigate(Screen.Profile.route)}
+            )
         }
     }
 }

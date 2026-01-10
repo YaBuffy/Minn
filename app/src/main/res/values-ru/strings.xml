@@ -10,7 +10,13 @@
 
     <!-- Profile Screen -->
     <string name="profile">Профиль</string>
-    <string name="edit_profile">Редактировать профиль</string>
+    <string name="edit_profile">Изменить профиль</string>
+    <string name="about_me">О себе</string>
+    <string name="confirm_login">Подтвердите вход</string>
+    <string name="re_entry">Для удаления аккаунта требуется повторный вход</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete_account">Удалить аккаунт</string>
     <string name="name">Имя</string>
     <string name="surname">Фамилия</string>
     <string name="bio">О себе</string>

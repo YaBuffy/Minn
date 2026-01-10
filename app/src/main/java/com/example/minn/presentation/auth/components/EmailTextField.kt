@@ -16,6 +16,7 @@ import com.example.minn.R
 @Composable
 fun EmailTextField(
     entry: String,
+    isError: Boolean,
     onChange: (String)-> Unit = {}
 ){
 
@@ -23,6 +24,7 @@ fun EmailTextField(
         value = entry,
         maxLines = 1,
         onValueChange = onChange,
+        isError = isError,
         label = {
             Text(
                 text = stringResource(R.string.email),

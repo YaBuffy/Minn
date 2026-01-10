@@ -23,12 +23,14 @@ import com.example.minn.R
 @Composable
 fun PasswordTextField(
     entry: String,
+    isError: Boolean,
     onChange: (String)-> Unit = {}
 ){
     var passwordVisibility by remember { mutableStateOf(false) }
     OutlinedTextField(
         value = entry,
         maxLines = 1,
+        isError = isError,
         onValueChange = onChange,
         label = {
             Text(

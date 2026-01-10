@@ -104,6 +104,7 @@ fun SignUpScreen(
 
         NameTextField(
             entry = name,
+            isError = state.error!=null
         ){
             vm.onNameChange(it)
         }
@@ -112,6 +113,7 @@ fun SignUpScreen(
 
         EmailTextField(
             entry = email,
+            isError = state.error!=null
         ){
             vm.onEmailChange(it)
         }
@@ -119,7 +121,8 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.padding(vertical = 5.dp))
 
         PasswordTextField(
-            entry = password
+            entry = password,
+            isError = state.error!=null
         ){
             vm.onPasswordChange(it)
         }

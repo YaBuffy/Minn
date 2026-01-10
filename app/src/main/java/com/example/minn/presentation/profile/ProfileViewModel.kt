@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.minn.Util.Response
 import com.example.minn.domain.model.Gender
 import com.example.minn.domain.model.User
+import com.example.minn.domain.usecase.authUseCase.DeleteAccountUseCase
+import com.example.minn.domain.usecase.authUseCase.ReauthenticateUseCase
 import com.example.minn.domain.usecase.authUseCase.SignOutUseCase
 import com.example.minn.domain.usecase.userUseCase.GetUserUseCase
 import com.example.minn.domain.usecase.userUseCase.UpdateUserUseCase
@@ -25,10 +27,14 @@ class ProfileViewModel  @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
     private val getUserUseCase: GetUserUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val reauthenticateUseCase: ReauthenticateUseCase,
     private val auth: FirebaseAuth
 ): ViewModel(){
     private val _state = MutableStateFlow(ProfileUIState())
     val state = _state.asStateFlow()
+
+
 
     init{
         getUser()
@@ -137,20 +143,64 @@ class ProfileViewModel  @Inject constructor(
         }
     }
 
-    private fun fillFields(user: User) {
-        val birthDateLocal: LocalDate? = user.birthdate?.toDate()
-            ?.toInstant()
-            ?.atZone(ZoneId.systemDefault())
-            ?.toLocalDate()
-        _state.value = _state.value.copy(
-            name = user.name,
-            surname = user.surname,
-            bio = user.bio,
-            avatar = user.avatar,
-            gender = user.gender,
-            birthDate = birthDateLocal
-        )
+    fun hideReAuthDialog() {
+        _state.value = _state.value.copy(showReAuthDialog = false)
     }
+
+    fun reauthenticateAndDelete(password: String) {
+        val email = auth.currentUser?.email ?: return
+
+        viewModelScope.launch {
+            when (reauthenticateUseCase(email, password)) {
+                is Response.Success -> {
+                    _state.value = _state.value.copy(isLoading = false, error = null)
+                    deleteAccount()
+                }
+                is Response.Error -> {
+                    _state.value = _state.value.copy(isLoading = false, error = "Wrong password")
+                }
+                else -> {
+                    _state.value = _state.value.copy(isLoading = true, error = null)
+                }
+            }
+        }
+    }
+
+    fun deleteAccount(){
+        viewModelScope.launch {
+            when (val result = deleteAccountUseCase()) {
+                is Response.Success -> {
+                    _state.value = _state.value.copy(isLoading = false, isDeleted = true)
+                }
+
+                is Response.Error -> {
+                    if (result.message == "RECENT_LOGIN_REQUIRED") {
+                        _state.value = _state.value.copy(isLoading = false,showReAuthDialog = true)
+                    } else {
+                        _state.value = _state.value.copy(isLoading = false,error = result.message)
+                    }
+                }
+                else -> {
+                    _state.value = _state.value.copy(isLoading = true)
+                }
+            }
+        }
+    }
+
+//    private fun fillFields(user: User) {
+//        val birthDateLocal: LocalDate? = user.birthdate?.toDate()
+//            ?.toInstant()
+//            ?.atZone(ZoneId.systemDefault())
+//            ?.toLocalDate()
+//        _state.value = _state.value.copy(
+//            name = user.name,
+//            surname = user.surname,
+//            bio = user.bio,
+//            avatar = user.avatar,
+//            gender = user.gender,
+//            birthDate = birthDateLocal
+//        )
+//    }
 }
 
 data class ProfileUIState(
@@ -163,5 +213,7 @@ data class ProfileUIState(
     val birthDate: LocalDate? = null,
     val isLoading: Boolean = true,
     val success: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isDeleted: Boolean = false,
+    val showReAuthDialog: Boolean = false
 )
