@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">Minn</string>
+
     <!-- Genders   -->
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
     <string name="gender_other">Other</string>
     <string name="gender_not_specified">Not specified</string>
+
     <!--    Profile Screen-->
     <string name="profile">Profile</string>
     <string name="edit_profile">Edit Profile</string>
@@ -22,7 +24,6 @@
     <string name="cancellation">Cancellation</string>
     <string name="ok">OK</string>
 
-
     <!-- Auth Screen    -->
     <string name="email">email</string>
     <string name="password">password</string>
@@ -33,4 +34,9 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="name_low">name</string>
     <string name="birthdate">Birth Date</string>
+
+    <!--  Chat List  -->
+    <string name="chat_list">Chat List</string>
+    <string name="search">Search</string>
+
 </resources>

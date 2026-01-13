@@ -111,14 +111,19 @@ class ProfileViewModel  @Inject constructor(
 
     fun updateUser(){
         val uid = auth.currentUser?.uid ?: return
-        val birthDateTimestamp: Timestamp? = _state.value.birthDate.let { localDate ->
-            val date: Date = Date.from(localDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant())
-            Timestamp(date)
-        }
+        val birthDateTimestamp: Timestamp? =
+            _state.value.birthDate?.let { localDate ->
+                val instant = localDate
+                    .atStartOfDay(ZoneId.systemDefault())
+                    .toInstant()
+
+                Timestamp(Date.from(instant))
+            }
         Log.d("Time", "birthDateTimestamp - ${birthDateTimestamp}")
         val user = User(
             uid = uid,
             name = _state.value.name,
+            nameLower = _state.value.name.lowercase(),
             surname = _state.value.surname,
             email = _state.value.email,
             bio = _state.value.bio,

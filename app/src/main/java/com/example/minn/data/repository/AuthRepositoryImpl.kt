@@ -52,7 +52,8 @@ class AuthRepositoryImpl @Inject constructor(
             val user = User(
                 uid = firebaseUser.uid,
                 email = email,
-                name = name
+                name = name,
+                nameLower = name.lowercase()
             )
 
             userRepository.createUser(user)

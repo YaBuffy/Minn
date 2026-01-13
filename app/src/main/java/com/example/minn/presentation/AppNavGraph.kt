@@ -7,7 +7,8 @@ import androidx.navigation.compose.composable
 import com.example.minn.Screen
 import com.example.minn.presentation.auth.SignInScreen
 import com.example.minn.presentation.auth.SignUpScreen
-import com.example.minn.presentation.chat.ChatScreen
+import com.example.minn.presentation.chatList.ChatListScreen
+import com.example.minn.presentation.chatList.SearchScreen
 import com.example.minn.presentation.profile.EditProfileScreen
 import com.example.minn.presentation.profile.ProfileScreen
 
@@ -18,13 +19,13 @@ fun AppNavGraph(
 ){
     NavHost(
         navController = navController,
-        startDestination = if(isAuth) Screen.Profile.route else Screen.SignIn.route
+        startDestination = if(isAuth) Screen.ChatList.route else Screen.SignIn.route
     ){
         composable(Screen.SignIn.route) {
             SignInScreen(
                 onSignUpScreen = { navController.navigate(Screen.SignUp.route) },
                 onChatScreen = {
-                    navController.navigate(Screen.Profile.route) {
+                    navController.navigate(Screen.ChatList.route) {
                         popUpTo(Screen.SignIn.route) {
                             inclusive = true
                         }
@@ -36,17 +37,25 @@ fun AppNavGraph(
         composable(Screen.SignUp.route) {
             SignUpScreen(
                 onBack = {navController.navigate(Screen.SignIn.route)},
-                onChatScreen = {navController.navigate(Screen.Profile.route)}
+                onChatScreen = {navController.navigate(Screen.ChatList.route)}
             )
         }
 
-        composable(Screen.Chat.route) {
-            ChatScreen()
+        composable(Screen.ChatList.route) {
+            ChatListScreen(
+                onProfile = {navController.navigate(Screen.Profile.route)},
+                onSearch = {navController.navigate(Screen.Search.route)}
+            )
+        }
+        composable(Screen.Search.route) {
+            SearchScreen(
+                onBack = {navController.navigate(Screen.ChatList.route)}
+            )
         }
 
         composable(Screen.Profile.route) {
             ProfileScreen(
-                onBack = {},
+                onBack = {navController.navigate(Screen.ChatList.route)},
                 onEditProfile = {navController.navigate(Screen.EditProfile.route)}
             )
         }

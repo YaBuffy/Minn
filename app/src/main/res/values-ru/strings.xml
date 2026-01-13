@@ -26,8 +26,6 @@
     <string name="cancellation">Отмена</string>
     <string name="ok">ОК</string>
 
-
-
     <!-- Auth Screen -->
     <string name="email">электронная почта</string>
     <string name="password">пароль</string>
@@ -37,4 +35,10 @@
     <string name="login_to_your_account">Войдите в свой аккаунт</string>
     <string name="create_your_account">Создайте свой аккаунт</string>
     <string name="don_t_have_an_account">Нет аккаунта?</string>
+
+    <!--  Chat List  -->
+    <string name="chat_list">Список чатов</string>
+    <string name="search">Поиск</string>
+
+
 </resources>

@@ -9,4 +9,8 @@ interface UserRepository {
     suspend fun updateUser(user: User)
 
     fun getUser(uid: String): Flow<Response<User>>
+
+    fun getAllUsers(): Flow<Response<List<User>>>
+
+    fun searchUserByName(query: String): Flow<List<User>>
 }
