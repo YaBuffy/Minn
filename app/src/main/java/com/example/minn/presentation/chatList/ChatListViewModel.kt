@@ -6,13 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.minn.Util.Response
 import com.example.minn.domain.model.User
 import com.example.minn.domain.usecase.authUseCase.SignOutUseCase
+import com.example.minn.domain.usecase.chatUseCase.GetOrCreateChatUseCase
 import com.example.minn.domain.usecase.userUseCase.GetAllUsersUseCase
 import com.example.minn.domain.usecase.userUseCase.SearchUserByNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,11 +27,15 @@ import javax.inject.Inject
 class ChatListViewModel @Inject constructor(
     private val getAllUsersUseCase: GetAllUsersUseCase,
     private val signOutUseCase: SignOutUseCase,
-    private val searchUserByNameUseCase: SearchUserByNameUseCase
+    private val searchUserByNameUseCase: SearchUserByNameUseCase,
+    private val getOrCreateChatUseCase: GetOrCreateChatUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow(UsersUiState())
     val state = _state.asStateFlow()
+
+    private val _openChat = MutableSharedFlow<String>()
+    val openChat = _openChat.asSharedFlow()
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
@@ -86,6 +93,13 @@ class ChatListViewModel @Inject constructor(
     fun signOut(){
         viewModelScope.launch {
             signOutUseCase()
+        }
+    }
+
+    fun openChat(opponentUid: String){
+        viewModelScope.launch {
+            val chatId = getOrCreateChatUseCase(opponentUid)
+            _openChat.emit(chatId)
         }
     }
 

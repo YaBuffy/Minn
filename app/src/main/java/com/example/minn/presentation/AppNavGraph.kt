@@ -2,11 +2,14 @@ package com.example.minn.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.minn.Screen
 import com.example.minn.presentation.auth.SignInScreen
 import com.example.minn.presentation.auth.SignUpScreen
+import com.example.minn.presentation.chat.ChatScreen
 import com.example.minn.presentation.chatList.ChatListScreen
 import com.example.minn.presentation.chatList.SearchScreen
 import com.example.minn.presentation.profile.EditProfileScreen
@@ -44,25 +47,47 @@ fun AppNavGraph(
         composable(Screen.ChatList.route) {
             ChatListScreen(
                 onProfile = {navController.navigate(Screen.Profile.route)},
-                onSearch = {navController.navigate(Screen.Search.route)}
+                onSearch = {navController.navigate(Screen.Search.route)},
+                onChat = {chatId ->
+                    navController.navigate(Screen.Chat.createRoute(chatId))}
             )
         }
         composable(Screen.Search.route) {
             SearchScreen(
-                onBack = {navController.navigate(Screen.ChatList.route)}
+                onBack = {navController.popBackStack()},
+                onChat = {chatId ->
+                    navController.navigate(Screen.Chat.createRoute(chatId))
+                }
             )
         }
 
         composable(Screen.Profile.route) {
             ProfileScreen(
-                onBack = {navController.navigate(Screen.ChatList.route)},
+                onBack = {navController.popBackStack()},
                 onEditProfile = {navController.navigate(Screen.EditProfile.route)}
             )
         }
         composable(Screen.EditProfile.route) {
             EditProfileScreen(
-                onBack = {navController.navigate(Screen.Profile.route)}
+                onBack = {navController.popBackStack()}
             )
+        }
+
+        composable(Screen.Chat.route, arguments = listOf(
+            navArgument("chatId"){
+                type = NavType.StringType
+            }
+        )){backStackEntry->
+            val chatId = backStackEntry
+                .arguments
+                ?.getString("chatId")
+                ?: return@composable
+
+            ChatScreen(
+                chatId = chatId,
+                onBack = {navController.popBackStack()}
+            )
+
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,11 +17,18 @@ import com.example.minn.presentation.chatList.components.UserSearchBar
 @Composable
 fun SearchScreen(
     vm: ChatListViewModel = hiltViewModel(),
-    onBack: ()->Unit
+    onBack: ()->Unit,
+    onChat: (String)-> Unit
 ){
     val state by vm.state.collectAsState()
     val users by vm.users.collectAsState()
     val searchQuery by vm.searchQuery.collectAsState()
+
+    LaunchedEffect(Unit) {
+        vm.openChat.collect { chatId ->
+            onChat(chatId)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -39,12 +47,15 @@ fun SearchScreen(
             if (searchQuery==""){
                 item{
                     UserListRow(
-                        users = state.users
+                        users = state.users,
+                        onChat = {vm.openChat(it)}
                     )
                 }
             } else{
                 items(users){user->
-                    UserCard(user)
+                    UserCard(
+                        user = user,
+                        onChat = {vm.openChat(it)})
                 }
             }
         }

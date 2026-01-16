@@ -26,7 +26,8 @@ import com.example.minn.presentation.profile.components.DefaultAvatar
 
 @Composable
 fun UserCard(
-    user: User
+    user: User,
+    onChat: (String)->Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -36,7 +37,7 @@ fun UserCard(
         Card(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .clickable { },
+                .clickable {onChat(user.uid) },
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow
             ),

@@ -1,5 +1,6 @@
 package com.example.minn.presentation.chatList.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -16,12 +17,16 @@ import com.example.minn.presentation.profile.components.DefaultAvatar
 
 @Composable
 fun UserListRow(
-    users: List<User>
+    users: List<User>,
+    onChat: (String)-> Unit
 ){
-    LazyRow() {
+    LazyRow {
         items(users){user->
             Column(modifier = Modifier
-                .padding(start = 5.dp),
+                .padding(start = 5.dp)
+                .clickable{
+                    onChat(user.uid)
+                },
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
