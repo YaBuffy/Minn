@@ -39,4 +39,8 @@
     <string name="chat_list">Chat List</string>
     <string name="search">Search</string>
 
+    <!--  Chat  -->
+    <string name="chat">Chat</string>
+    <string name="message">Message</string>
+
 </resources>

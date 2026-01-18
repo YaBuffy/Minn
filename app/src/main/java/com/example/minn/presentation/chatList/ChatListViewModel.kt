@@ -98,7 +98,7 @@ class ChatListViewModel @Inject constructor(
 
     fun openChat(opponentUid: String){
         viewModelScope.launch {
-            val chatId = getOrCreateChatUseCase(opponentUid)
+            val chatId = getOrCreateChatUseCase(opponentUid).id
             _openChat.emit(chatId)
         }
     }

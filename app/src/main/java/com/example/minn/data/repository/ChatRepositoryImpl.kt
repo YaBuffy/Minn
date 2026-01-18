@@ -1,10 +1,12 @@
 package com.example.minn.data.repository
 
+import com.example.minn.domain.model.Chat
 import com.example.minn.domain.model.Message
 import com.example.minn.domain.repository.ChatRepository
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -59,29 +61,26 @@ class ChatRepositoryImpl @Inject constructor(
         }.await()
     }
 
-    override suspend fun getOrCreateChat(otherUserId: String): String {
+    override suspend fun getOrCreateChat(otherUserId: String): Chat {
         val currentUid = auth.currentUser!!.uid
 
         val chatId = listOf(currentUid, otherUserId)
             .sorted()
             .joinToString("_")
 
-        val chatRef = firestore
+        val chat = Chat(
+            id = chatId,
+            members = listOf(currentUid, otherUserId),
+            createdAt = Timestamp.now()
+        )
+
+        firestore
             .collection("chats")
             .document(chatId)
+            .set(chat, SetOptions.merge())
+            .await()
 
-        val snapshot = chatRef.get().await()
-
-        if(!snapshot.exists()){
-            chatRef.set(
-                mapOf(
-                    "members" to listOf(currentUid,otherUserId),
-                    "createdAt" to Timestamp.now()
-                )
-            ).await()
-        }
-
-        return chatId
+        return chat
     }
 
 }

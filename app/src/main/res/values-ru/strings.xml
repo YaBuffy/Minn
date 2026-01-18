@@ -40,5 +40,10 @@
     <string name="chat_list">Список чатов</string>
     <string name="search">Поиск</string>
 
+    <!--  Chat  -->
+    <string name="chat">Чат</string>
+    <string name="message">Сообщение</string>
+
+
 
 </resources>

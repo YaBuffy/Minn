@@ -60,7 +60,6 @@ fun SignInScreen(
                 detectTapGestures (onTap = {
                     focusManager.clearFocus()
                 })
-
             },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top

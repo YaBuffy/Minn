@@ -44,14 +44,6 @@ fun AppNavGraph(
             )
         }
 
-        composable(Screen.ChatList.route) {
-            ChatListScreen(
-                onProfile = {navController.navigate(Screen.Profile.route)},
-                onSearch = {navController.navigate(Screen.Search.route)},
-                onChat = {chatId ->
-                    navController.navigate(Screen.Chat.createRoute(chatId))}
-            )
-        }
         composable(Screen.Search.route) {
             SearchScreen(
                 onBack = {navController.popBackStack()},
@@ -70,6 +62,15 @@ fun AppNavGraph(
         composable(Screen.EditProfile.route) {
             EditProfileScreen(
                 onBack = {navController.popBackStack()}
+            )
+        }
+
+        composable(Screen.ChatList.route) {
+            ChatListScreen(
+                onProfile = {navController.navigate(Screen.Profile.route)},
+                onSearch = {navController.navigate(Screen.Search.route)},
+                onChat = {chatId ->
+                    navController.navigate(Screen.Chat.createRoute(chatId))}
             )
         }
 
