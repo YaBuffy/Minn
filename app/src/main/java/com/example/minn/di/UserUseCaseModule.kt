@@ -5,6 +5,7 @@ import com.example.minn.domain.usecase.userUseCase.CreateUserUseCase
 import com.example.minn.domain.usecase.userUseCase.GetAllUsersUseCase
 import com.example.minn.domain.usecase.userUseCase.GetUserUseCase
 import com.example.minn.domain.usecase.userUseCase.SearchUserByNameUseCase
+import com.example.minn.domain.usecase.userUseCase.SetOnlineUseCase
 import com.example.minn.domain.usecase.userUseCase.UpdateUserUseCase
 import dagger.Module
 import dagger.Provides
@@ -54,6 +55,14 @@ object UserUseCaseModule {
         repository: UserRepository
     ): SearchUserByNameUseCase {
         return SearchUserByNameUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSetOnlineUseCase(
+        repository: UserRepository
+    ): SetOnlineUseCase {
+        return SetOnlineUseCase(repository)
     }
 
 }

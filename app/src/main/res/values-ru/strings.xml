@@ -43,6 +43,13 @@
     <!--  Chat  -->
     <string name="chat">Чат</string>
     <string name="message">Сообщение</string>
+    <string name="online">В сети</string>
+    <string name="offline">Не в сети</string>
+    <string name="last_seen_just_now">Был(а) только что</string>
+    <string name="last_seen_minutes_ago">Был(а) %1$d минут назад</string>
+    <string name="last_seen_hours_ago">Был(а) %1$d часов назад</string>
+    <string name="last_seen_on">Был(а) %1$s</string>
+
 
 
 

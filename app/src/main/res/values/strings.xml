@@ -42,5 +42,12 @@
     <!--  Chat  -->
     <string name="chat">Chat</string>
     <string name="message">Message</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="last_seen_just_now">Last seen just now</string>
+    <string name="last_seen_minutes_ago">Last seen %1$d minutes ago</string>
+    <string name="last_seen_hours_ago">Last seen %1$d hours ago</string>
+    <string name="last_seen_on">Last seen on %1$s</string>
+
 
 </resources>

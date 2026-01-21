@@ -19,14 +19,14 @@ fun ChatListScreen(
     vm: ChatListViewModel = hiltViewModel(),
     onProfile: ()-> Unit,
     onSearch: ()-> Unit,
-    onChat: (String)-> Unit
+    onChat: (String, String)-> Unit
 ){
 
     val state by vm.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        vm.openChat.collect { chatId ->
-            onChat(chatId)
+        vm.openChat.collect { event ->
+            onChat(event.chatId, event.opponentUid)
         }
     }
 

@@ -18,15 +18,15 @@ import com.example.minn.presentation.chatList.components.UserSearchBar
 fun SearchScreen(
     vm: ChatListViewModel = hiltViewModel(),
     onBack: ()->Unit,
-    onChat: (String)-> Unit
+    onChat: (String, String)-> Unit
 ){
     val state by vm.state.collectAsState()
     val users by vm.users.collectAsState()
     val searchQuery by vm.searchQuery.collectAsState()
 
     LaunchedEffect(Unit) {
-        vm.openChat.collect { chatId ->
-            onChat(chatId)
+        vm.openChat.collect { event ->
+            onChat(event.chatId, event.opponentUid)
         }
     }
 

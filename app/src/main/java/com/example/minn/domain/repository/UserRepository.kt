@@ -13,4 +13,5 @@ interface UserRepository {
     fun getAllUsers(): Flow<Response<List<User>>>
 
     fun searchUserByName(query: String): Flow<List<User>>
+    suspend fun setOnline(online: Boolean)
 }

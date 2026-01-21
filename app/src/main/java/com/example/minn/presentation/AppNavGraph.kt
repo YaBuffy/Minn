@@ -47,8 +47,8 @@ fun AppNavGraph(
         composable(Screen.Search.route) {
             SearchScreen(
                 onBack = {navController.popBackStack()},
-                onChat = {chatId ->
-                    navController.navigate(Screen.Chat.createRoute(chatId))
+                onChat = {chatId, opponentUid ->
+                    navController.navigate(Screen.Chat.createRoute(chatId, opponentUid))
                 }
             )
         }
@@ -69,13 +69,16 @@ fun AppNavGraph(
             ChatListScreen(
                 onProfile = {navController.navigate(Screen.Profile.route)},
                 onSearch = {navController.navigate(Screen.Search.route)},
-                onChat = {chatId ->
-                    navController.navigate(Screen.Chat.createRoute(chatId))}
+                onChat = {chatId, opponentUid ->
+                    navController.navigate(Screen.Chat.createRoute(chatId, opponentUid))}
             )
         }
 
         composable(Screen.Chat.route, arguments = listOf(
             navArgument("chatId"){
+                type = NavType.StringType
+            },
+            navArgument("opponentUid"){
                 type = NavType.StringType
             }
         )){backStackEntry->
@@ -84,8 +87,13 @@ fun AppNavGraph(
                 ?.getString("chatId")
                 ?: return@composable
 
+            val opponentUid = backStackEntry
+                .arguments
+                ?.getString("opponentUid")
+                ?: return@composable
             ChatScreen(
                 chatId = chatId,
+                opponentUid = opponentUid,
                 onBack = {navController.popBackStack()}
             )
 

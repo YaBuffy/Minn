@@ -3,6 +3,7 @@ package com.example.minn.domain.model
 import androidx.annotation.StringRes
 import com.example.minn.R
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.PropertyName
 
 
 data class User(
@@ -14,7 +15,10 @@ data class User(
     val avatar: String = "",
     val bio: String = "",
     val gender: Gender = Gender.NOT_SPECIFIED,
-    val birthdate: Timestamp? = null
+    val birthdate: Timestamp? = null,
+    @PropertyName("online")
+    val online: Boolean = false,
+    val lastSeen: Timestamp? = null
 )
 
 enum class Gender(@StringRes val labelRes: Int) {

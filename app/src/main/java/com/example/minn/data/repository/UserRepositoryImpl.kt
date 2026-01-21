@@ -3,6 +3,7 @@ package com.example.minn.data.repository
 import com.example.minn.Util.Response
 import com.example.minn.domain.model.User
 import com.example.minn.domain.repository.UserRepository
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
@@ -103,5 +104,18 @@ class UserRepositoryImpl @Inject constructor(
             .filter { it.uid != currentUid}
 
         emit(users)
+    }
+
+    override suspend fun setOnline(online: Boolean) {
+        val uid = auth.currentUser?.uid ?: return
+
+        firestore.collection("users")
+            .document(uid)
+            .update(
+                mapOf(
+                    "online" to online,
+                    "lastSeen" to Timestamp.now()
+                )
+            ).await()
     }
 }

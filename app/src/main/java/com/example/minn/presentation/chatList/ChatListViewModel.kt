@@ -34,7 +34,7 @@ class ChatListViewModel @Inject constructor(
     private val _state = MutableStateFlow(UsersUiState())
     val state = _state.asStateFlow()
 
-    private val _openChat = MutableSharedFlow<String>()
+    private val _openChat = MutableSharedFlow<OpenChatEvent>()
     val openChat = _openChat.asSharedFlow()
 
     private val _searchQuery = MutableStateFlow("")
@@ -99,7 +99,12 @@ class ChatListViewModel @Inject constructor(
     fun openChat(opponentUid: String){
         viewModelScope.launch {
             val chatId = getOrCreateChatUseCase(opponentUid).id
-            _openChat.emit(chatId)
+            _openChat.emit(
+                OpenChatEvent(
+                chatId = chatId,
+                opponentUid = opponentUid
+                )
+            )
         }
     }
 
@@ -109,4 +114,9 @@ data class UsersUiState(
     val isLoading: Boolean = false,
     val users: List<User> = emptyList(),
     val error: String? = null
+)
+
+data class OpenChatEvent(
+    val chatId: String,
+    val opponentUid: String
 )

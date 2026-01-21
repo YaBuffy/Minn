@@ -28,19 +28,28 @@ import com.example.minn.presentation.chat.components.MessageCard
 @Composable
 fun ChatScreen(
     chatId: String,
+    opponentUid: String,
     onBack: ()-> Unit,
     vm: ChatViewModel = hiltViewModel()
 ){
     val chatText by vm.chatText.collectAsState()
     val messages by vm.messages.collectAsState()
+    val opponent by vm.opponentState.collectAsState()
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(chatId) {
         vm.setChatId(chatId)
     }
+    LaunchedEffect(opponentUid) {
+        vm.loadOpponent(opponentUid)
+    }
 
     Scaffold(
-        topBar = {ChatAppBar(onBack = onBack)},
+        topBar = {ChatAppBar(
+            onBack = onBack,
+            opponent = opponent,
+            formatLastSeen = {vm.formatLastSeen(it)}
+        )},
         contentWindowInsets = WindowInsets.systemBars,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         modifier = Modifier
@@ -59,7 +68,7 @@ fun ChatScreen(
             ) {
                 items(
                     items = messages.reversed(),
-                    key = { it.id } // стабильные ключи для правильной recomposition
+                    key = { it.id }
                 ) { message ->
                     MessageCard(
                         isMine = message.senderId == vm.currentUserId,
