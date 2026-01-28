@@ -1,8 +1,10 @@
 package com.example.minn.di
 
 import com.example.minn.domain.repository.ChatRepository
-import com.example.minn.domain.usecase.chatUseCase.GetMessageUseCase
+import com.example.minn.domain.usecase.chatUseCase.ObserveNewMessagesUseCase
 import com.example.minn.domain.usecase.chatUseCase.GetOrCreateChatUseCase
+import com.example.minn.domain.usecase.chatUseCase.LoadLastMessagesUseCase
+import com.example.minn.domain.usecase.chatUseCase.LoadOlderMessagesUseCase
 import com.example.minn.domain.usecase.chatUseCase.SendMessageUseCase
 import dagger.Module
 import dagger.Provides
@@ -17,10 +19,10 @@ object ChatUseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetMessageUseCase(
+    fun provideObserveNewMessagesUseCase(
         repository: ChatRepository
-    ): GetMessageUseCase {
-        return GetMessageUseCase(repository)
+    ): ObserveNewMessagesUseCase {
+        return ObserveNewMessagesUseCase(repository)
     }
 
     @Provides
@@ -37,6 +39,21 @@ object ChatUseCaseModule {
         repository: ChatRepository
     ): GetOrCreateChatUseCase {
         return GetOrCreateChatUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoadOlderMessagesUseCase(
+        repository: ChatRepository
+    ): LoadOlderMessagesUseCase {
+        return LoadOlderMessagesUseCase(repository)
+    }
+    @Provides
+    @Singleton
+    fun provideLoadLastMessagesUseCase(
+        repository: ChatRepository
+    ): LoadLastMessagesUseCase {
+        return LoadLastMessagesUseCase(repository)
     }
 
 }

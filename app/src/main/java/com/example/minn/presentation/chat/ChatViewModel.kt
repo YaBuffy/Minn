@@ -7,22 +7,20 @@ import androidx.lifecycle.viewModelScope
 import com.example.minn.R
 import com.example.minn.Util.Response
 import com.example.minn.domain.model.Message
-import com.example.minn.domain.usecase.chatUseCase.GetMessageUseCase
+import com.example.minn.domain.usecase.chatUseCase.LoadLastMessagesUseCase
+import com.example.minn.domain.usecase.chatUseCase.LoadOlderMessagesUseCase
+import com.example.minn.domain.usecase.chatUseCase.ObserveNewMessagesUseCase
 import com.example.minn.domain.usecase.chatUseCase.SendMessageUseCase
 import com.example.minn.domain.usecase.userUseCase.GetUserUseCase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.sql.Time
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -31,41 +29,129 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor (
-    private val getMessageUseCase: GetMessageUseCase,
+    private val observeNewMessagesUseCase: ObserveNewMessagesUseCase,
+    private val loadOlderMessagesUseCase: LoadOlderMessagesUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val getUserUseCase: GetUserUseCase,
+    private val loadLastMessagesUseCase: LoadLastMessagesUseCase,
     private val resources: Resources,
-    private val auth: FirebaseAuth
+    auth: FirebaseAuth
 ): ViewModel() {
 
     private val _chatText = MutableStateFlow("")
     val chatText = _chatText.asStateFlow()
-    private val _chatId = MutableStateFlow<String?>(null)
+    private val _chatId = MutableStateFlow("")
 
     val currentUserId = auth.currentUser?.uid
     private val _opponentState = MutableStateFlow(OpponentUIState())
     val opponentState = _opponentState.asStateFlow()
-
-    fun setChatId(chatId: String) {
-        _chatId.value = chatId
-    }
+    private val _messages = MutableStateFlow<List<Message>>(emptyList())
+    val messages: StateFlow<List<Message>> = _messages
+    private var lastMessageSnapshot: DocumentSnapshot? = null
+    private var isLoading = false
+    private var observerJob: Job? = null
 
     fun onChatChange(newText: String){
         _chatText.value = newText
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val messages: StateFlow<List<Message>> =
-        _chatId
-            .filterNotNull()
-            .flatMapLatest { chatId ->
-                getMessageUseCase(chatId)
+    fun startChat(chatId: String) {
+        if (_chatId.value == chatId) return
+
+        _chatId.value = chatId
+        observerJob?.cancel()
+
+        _messages.value = emptyList()
+        lastMessageSnapshot = null
+        isLoading = false
+
+        viewModelScope.launch {
+            // 1️⃣ грузим последние сообщения
+            val (initial, cursor) = loadLastMessagesUseCase(chatId)
+            _messages.value = initial
+            lastMessageSnapshot = cursor
+            Log.d("messages", "loadLastMessagesUseCase")
+
+            // 2️⃣ observer ТОЛЬКО для новых
+            observerJob = launch {
+                observeNewMessagesUseCase(chatId).collect { new ->
+                    if (new.isEmpty()) return@collect
+
+                    val filtered = new.filterNot { incoming ->
+                        _messages.value.any { it.id == incoming.id }
+                    }
+
+                    if (filtered.isNotEmpty()) {
+                        _messages.value = filtered + _messages.value
+                    }
+                }
             }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
+        }
+    }
+//    private fun observerMessages(chatId: String) {
+//        observerJob = viewModelScope.launch {
+//            observeNewMessagesUseCase(chatId).collect { incoming ->
+//                _messages.value = mergeMessages(_messages.value, incoming)
+//            }
+//        }
+//    }
+    fun loadOlder() {
+        Log.d("Pagination", "loadOlder CALLED - isLoading: $isLoading, hasSnapshot: ${lastMessageSnapshot != null}")
+        if (isLoading || lastMessageSnapshot == null) return
+        isLoading = true
+
+        viewModelScope.launch {
+            Log.d("Pagination", "Current cursor timestamp: ${lastMessageSnapshot?.get("timestamp")}")
+            val (older, newCursor) =
+                loadOlderMessagesUseCase(_chatId.value, lastMessageSnapshot!!)
+            if (older.isEmpty()) {
+                Log.d("Pagination", "No more messages!")
+                isLoading = false
+                lastMessageSnapshot = null
+                return@launch
+            }
+
+            val uniqueOlder = older.filterNot { newMsg ->
+                _messages.value.any { it.id == newMsg.id }
+            }
+
+            // ВАЖНО: ВСЕГДА обновляем курсор, даже если все дубликаты!
+            lastMessageSnapshot = newCursor
+
+            if (uniqueOlder.isNotEmpty()) {
+                _messages.value = _messages.value + uniqueOlder
+            } else {
+                Log.d("Pagination", "All duplicates! Stopping.")
+            }
+
+            isLoading = false
+        }
+    }
+
+//    fun observerMessages(){
+//        viewModelScope.launch {
+//            observeNewMessagesUseCase(_chatId.value).collect {snapshot ->
+//                val newMessages = snapshot.toObjects(Message::class.java)
+//                _messages.value = newMessages + _messages.value
+//                lastMessageSnapshot = snapshot.documents.lastOrNull()
+//            }
+//        }
+//    }
+
+//    fun loadOlderMessages(){
+//        if (isLoadingPage) return
+//        isLoadingPage = true
+//        viewModelScope.launch {
+//            val (older,newCursor) = loadOlderMessagesUseCase(_chatId.value, lastMessageSnapshot)
+//            Log.d("loadOlderMessages", lastMessageSnapshot.toString())
+//            if (older.isNotEmpty()){
+//                _messages.value +=older
+//                Log.d("message", _messages.value.last().text)
+//                lastMessageSnapshot = newCursor
+//            }
+//            isLoadingPage = false
+//        }
+//    }
 
     fun sendMessage(text: String, chatId: String){
         viewModelScope.launch {
