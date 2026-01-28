@@ -66,13 +66,11 @@ class ChatViewModel @Inject constructor (
         isLoading = false
 
         viewModelScope.launch {
-            // 1️⃣ грузим последние сообщения
             val (initial, cursor) = loadLastMessagesUseCase(chatId)
             _messages.value = initial
             lastMessageSnapshot = cursor
             Log.d("messages", "loadLastMessagesUseCase")
 
-            // 2️⃣ observer ТОЛЬКО для новых
             observerJob = launch {
                 observeNewMessagesUseCase(chatId).collect { new ->
                     if (new.isEmpty()) return@collect
@@ -115,7 +113,6 @@ class ChatViewModel @Inject constructor (
                 _messages.value.any { it.id == newMsg.id }
             }
 
-            // ВАЖНО: ВСЕГДА обновляем курсор, даже если все дубликаты!
             lastMessageSnapshot = newCursor
 
             if (uniqueOlder.isNotEmpty()) {

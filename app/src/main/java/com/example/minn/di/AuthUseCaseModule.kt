@@ -10,7 +10,6 @@ import com.example.minn.domain.usecase.authUseCase.ReauthenticateUseCase
 import com.example.minn.domain.usecase.authUseCase.SignInUseCase
 import com.example.minn.domain.usecase.authUseCase.SignOutUseCase
 import com.example.minn.domain.usecase.authUseCase.SignUpUseCase
-import com.example.minn.domain.usecase.userUseCase.UpdateUserUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,12 +22,13 @@ object AuthUseCaseModule {
 
     @Provides
     fun provideAuthUseCases(
-        repository: AuthRepository
+        repository: AuthRepository,
+        userRepository: UserRepository
     ): AuthUseCases{
         return AuthUseCases(
             isUserAuth = IsUserAuthUseCase(repository),
             getAuthState = GetAuthStateUseCase(repository),
-            signIn = SignInUseCase(repository),
+            signIn = SignInUseCase(repository, userRepository),
             signUp = SignUpUseCase(repository),
         )
     }
@@ -36,9 +36,10 @@ object AuthUseCaseModule {
     @Provides
     @Singleton
     fun provideSignOutUseCase(
-        repository: AuthRepository
+        authRepository: AuthRepository,
+        userRepository: UserRepository
     ): SignOutUseCase {
-        return SignOutUseCase(repository)
+        return SignOutUseCase(authRepository, userRepository)
     }
 
     @Provides
