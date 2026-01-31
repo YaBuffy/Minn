@@ -116,7 +116,7 @@ class ChatViewModel @Inject constructor (
             lastMessageSnapshot = newCursor
 
             if (uniqueOlder.isNotEmpty()) {
-                _messages.value = _messages.value + uniqueOlder
+                _messages.value += uniqueOlder
             } else {
                 Log.d("Pagination", "All duplicates! Stopping.")
             }

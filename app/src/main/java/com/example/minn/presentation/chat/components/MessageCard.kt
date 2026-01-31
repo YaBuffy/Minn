@@ -11,9 +11,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.minn.domain.model.Message
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun MessageCard(
@@ -23,7 +27,7 @@ fun MessageCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 5.dp, top = 5.dp, start = 5.dp, end = 5.dp),
+            .padding(5.dp),
         horizontalArrangement = if(isMine) Arrangement.End else Arrangement.Start
     ){
         Card(
@@ -50,9 +54,21 @@ fun MessageCard(
             ){
                 Text(
                     text = message.text,
+                    modifier = Modifier.padding(end = 40.dp),
                     style = MaterialTheme.typography.bodyLarge)
-
+                Text(
+                    text = formatTime(message.timestamp!!),
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
+}
+
+fun formatTime(timestamp: Timestamp): String {
+    val date = timestamp.toDate()
+    val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return formatter.format(date)
 }
