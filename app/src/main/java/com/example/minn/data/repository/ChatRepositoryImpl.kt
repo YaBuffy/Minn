@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -114,25 +113,41 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getOrCreateChat(otherUserId: String): Chat {
-        val currentUid = auth.currentUser!!.uid
+        val currentUid = auth.currentUser?.uid ?: throw IllegalStateException("User not signed in")
 
-        val chatId = listOf(currentUid, otherUserId)
-            .sorted()
-            .joinToString("_")
+        val chatId = listOf(currentUid, otherUserId).sorted().joinToString("_")
+        val chatRef = firestore.collection("chats").document(chatId)
 
-        val chat = Chat(
-            id = chatId,
-            members = listOf(currentUid, otherUserId),
-            createdAt = Timestamp.now()
-        )
+        val snapshot = chatRef.get().await()
+        Log.d("ChatRepo", "Snapshot exists: ${snapshot.exists()}, chatId: $chatId")
+        return if (snapshot.exists()) {
+            snapshot.toObject(Chat::class.java)!!
+        } else {
+            val chat = Chat(
+                id = chatId,
+                members = listOf(currentUid, otherUserId),
+                createdAt = Timestamp.now()
+            )
+            Log.d("ChatRepo", "Creating new chat: $chat")
+            chatRef.set(chat).await()
+            chat
+        }
+    }
 
-        firestore
+    override fun loadLastChats(): Flow<List<Chat>> = callbackFlow{
+        val uid = auth.currentUser?.uid ?: return@callbackFlow
+
+        val listener = firestore
             .collection("chats")
-            .document(chatId)
-            .set(chat, SetOptions.merge())
-            .await()
+            .whereArrayContains("members", uid)
+            .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error!= null || snapshot == null) return@addSnapshotListener
 
-        return chat
+                val chats = snapshot.toObjects(Chat::class.java)
+                trySend(chats)
+            }
+        awaitClose {listener.remove()}
     }
 
 }

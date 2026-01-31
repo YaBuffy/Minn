@@ -152,6 +152,7 @@ class ChatViewModel @Inject constructor (
 
     fun sendMessage(text: String, chatId: String){
         viewModelScope.launch {
+            Log.d("ChatRepo", "chatId is ${chatId}")
             sendMessageUseCase(chatId = chatId, text = text)
         }
         _chatText.value = ""
