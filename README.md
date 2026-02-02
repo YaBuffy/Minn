@@ -33,12 +33,12 @@ The app supports real-time messaging, user profiles, online status, and both lig
 - **Material 3**
 - **Coroutines & Flow**
 
-### 💬 Chat
+### Chat
 | Light | Dark |
 |------|------|
 | ![](Screenshots/chat.png) | ![](Screenshots/chatDark.png) |
 
-### 📋 Chat List
+### Chat List
 | Light | Dark |
 |------|------|
 | ![](Screenshots/chatList.png) | ![](Screenshots/chatListDark.png) |
@@ -48,7 +48,7 @@ The app supports real-time messaging, user profiles, online status, and both lig
 |------|------|
 | ![](Screenshots/signIn.png) | ![](Screenshots/signInDark.png) |
 
-### 📝 Sign Up
+### Sign Up
 | Light | Dark |
 |------|------|
 | ![](Screenshots/singUp.png) | ![](Screenshots/signUpDark.png) |
