@@ -35,6 +35,7 @@ fun ChatCard(
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable { onClick() },
         shape = MaterialTheme.shapes.small,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(

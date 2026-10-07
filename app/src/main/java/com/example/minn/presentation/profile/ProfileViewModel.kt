@@ -180,9 +180,9 @@ class ProfileViewModel  @Inject constructor(
 
                 is Response.Error -> {
                     if (result.message == "RECENT_LOGIN_REQUIRED") {
-                        _state.value = _state.value.copy(isLoading = false,showReAuthDialog = true)
+                        _state.value = _state.value.copy(isLoading = false, showReAuthDialog = true)
                     } else {
-                        _state.value = _state.value.copy(isLoading = false,error = result.message)
+                        _state.value = _state.value.copy(isLoading = false, error = result.message)
                     }
                 }
                 else -> {

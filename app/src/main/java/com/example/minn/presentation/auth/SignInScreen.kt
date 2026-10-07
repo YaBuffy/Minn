@@ -8,10 +8,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,6 +65,11 @@ fun SignInScreen(
             .background(
                 color = MaterialTheme.colorScheme.background
             )
+            .windowInsetsPadding(
+                WindowInsets.systemBars
+                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+            )
+            .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime))
             .pointerInput(Unit){
                 detectTapGestures (onTap = {
                     focusManager.clearFocus()
@@ -64,47 +78,55 @@ fun SignInScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = "logo",
+        // The form scrolls inside the space left by the bottom row, so a
+        // focused field can always be brought above the keyboard.
+        Column(
             modifier = Modifier
-                .systemBarsPadding()
-                .padding(top = 120.dp)
-        )
-        Text(
-            text = stringResource(R.string.login_to_your_account),
-            fontSize = 18.sp,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .fillMaxWidth(0.75f)
-                .padding(top = 30.dp, bottom = 20.dp)
-        )
+                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_logo),
+                contentDescription = "logo",
+                modifier = Modifier
+                    .padding(top = 120.dp)
+            )
+            Text(
+                text = stringResource(R.string.login_to_your_account),
+                fontSize = 18.sp,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .padding(top = 30.dp, bottom = 20.dp)
+            )
 
-        EmailTextField(
-            entry = email,
-            isError = state.error!=null
-        ){
-            vm.onEmailChange(it)
+            EmailTextField(
+                entry = email,
+                isError = state.error!=null
+            ){
+                vm.onEmailChange(it)
+            }
+
+            Spacer(modifier = Modifier.padding(vertical = 5.dp))
+
+            PasswordTextField(
+                entry = password,
+                isError = state.error!=null
+            ){
+                vm.onPasswordChange(it)
+            }
+
+            Spacer(modifier = Modifier.padding(vertical = 15.dp))
+
+            PrimaryButton(
+                buttonText = stringResource(R.string.sign_in),
+                onClick = {vm.signIn(email,password)}
+            )
         }
-
-        Spacer(modifier = Modifier.padding(vertical = 5.dp))
-
-        PasswordTextField(
-            entry = password,
-            isError = state.error!=null
-        ){
-            vm.onPasswordChange(it)
-        }
-
-        Spacer(modifier = Modifier.padding(vertical = 15.dp))
-
-        PrimaryButton(
-            buttonText = stringResource(R.string.sign_in),
-            onClick = {vm.signIn(email,password)}
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
 
         Row(
             modifier = Modifier

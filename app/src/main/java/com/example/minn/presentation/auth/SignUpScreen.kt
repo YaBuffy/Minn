@@ -9,8 +9,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,18 +68,22 @@ fun SignUpScreen(
             .background(
                 color = MaterialTheme.colorScheme.background
             )
+            .windowInsetsPadding(
+                WindowInsets.systemBars
+                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+            )
+            .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime))
             .pointerInput(Unit){
                 detectTapGestures (onTap = {
                     focusManager.clearFocus()
                 })
-
-            },
+            }
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
         Row(
             modifier = Modifier
-                .systemBarsPadding()
                 .padding(top = 5.dp)
                 .fillMaxWidth(0.9f),
             horizontalArrangement = Arrangement.Start
