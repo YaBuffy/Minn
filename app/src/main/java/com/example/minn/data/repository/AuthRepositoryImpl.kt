@@ -89,10 +89,12 @@ class AuthRepositoryImpl @Inject constructor(
         val uid = user.uid
 
         return try {
-            firestore.collection("users").document(uid)
+            user.delete().await()
+
+            firestore.collection("users")
+                .document(uid)
                 .delete()
                 .await()
-            user.delete().await()
             Log.d("delete", "success")
             Response.Success(true)
         } catch (e: FirebaseAuthRecentLoginRequiredException){
