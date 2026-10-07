@@ -6,10 +6,17 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -107,7 +114,11 @@ fun ChatScreen(
             opponent = opponent,
             formatLastSeen = {vm.formatLastSeen(it)}
         )},
-        contentWindowInsets = WindowInsets.systemBars,
+        // Bottom insets are applied once, on the content column below.
+        // Leaving navigationBars out of the Scaffold prevents double padding
+        // when the IME is open.
+        contentWindowInsets = WindowInsets.systemBars
+            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         modifier = Modifier
             .pointerInput(Unit) {
@@ -116,7 +127,11 @@ fun ChatScreen(
     ) {paddingValues ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)) {
+            .padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
+            .windowInsetsPadding(
+                WindowInsets.navigationBars.union(WindowInsets.ime)
+            )) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier
