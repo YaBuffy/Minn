@@ -18,6 +18,8 @@ hilt-navigation-compose = "1.2.0"
 navigation = "2.8.3"
 lifecycle = "2.8.4"
 kotlinx-coroutines-play-services = "1.8.1"
+kotlinx-coroutines-test = "1.9.0"
+mockk = "1.13.13"
 
 
 [libraries]
@@ -50,6 +52,8 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines-play-services" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
